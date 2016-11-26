@@ -157,6 +157,7 @@ public class WeekView extends View {
     private EmptyViewLongPressListener mEmptyViewLongPressListener;
     private DateTimeInterpreter mDateTimeInterpreter;
     private ScrollListener mScrollListener;
+    private HeaderViewClickListener mHeaderClickListener;
 
     private final GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
 
@@ -267,6 +268,15 @@ public class WeekView extends View {
                 if (selectedTime != null) {
                     playSoundEffect(SoundEffectConstants.CLICK);
                     mEmptyViewClickListener.onEmptyViewClicked(selectedTime);
+                }
+            }
+
+            //todo added
+            if (mHeaderClickListener != null && e.getX() > mHeaderColumnWidth && e.getY() < (mHeaderHeight + mHeaderRowPadding * 2 + mHeaderMarginBottom)) {
+                Calendar selectedTime = getTimeFromPoint(e.getX(), e.getY() + mHourHeight);
+                if (selectedTime != null) {
+                    playSoundEffect(SoundEffectConstants.CLICK);
+                    mHeaderClickListener.onHeaderViewClicked(selectedTime);
                 }
             }
 
@@ -1262,6 +1272,11 @@ public class WeekView extends View {
     //
     /////////////////////////////////////////////////////////////////
 
+    public void setOnHeaderClickListener(HeaderViewClickListener listener)
+    {
+        this.mHeaderClickListener = listener;
+    }
+
     public void setOnEventClickListener (EventClickListener listener) {
         this.mEventClickListener = listener;
     }
@@ -2078,5 +2093,10 @@ public class WeekView extends View {
          * @param oldFirstVisibleDay The old first visible day (is null on the first call).
          */
         void onFirstVisibleDayChanged(Calendar newFirstVisibleDay, Calendar oldFirstVisibleDay);
+    }
+
+    public interface HeaderViewClickListener
+    {
+        void onHeaderViewClicked(Calendar day);
     }
 }
