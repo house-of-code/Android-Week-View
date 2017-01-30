@@ -66,7 +66,7 @@ Usage
     // Get a reference for the week view in the layout.
     mWeekView = (WeekView) findViewById(R.id.weekView);
 
-    // Set an action when any event is clicked.
+    // Set an action when any mEvent is clicked.
     mWeekView.setOnEventClickListener(mEventClickListener);
 
     // The week view has infinite scrolling horizontally. We have to provide the events of a
@@ -136,12 +136,12 @@ Use the following interfaces according to your need.
 
 - `mWeekView.setWeekViewLoader()` to provide events to the calendar
 - `mWeekView.setMonthChangeListener()` to provide events to the calendar by months
-- `mWeekView.setOnEventClickListener()` to get a callback when an event is clicked
-- `mWeekView.setEventLongPressListener()` to get a callback when an event is long pressed
+- `mWeekView.setOnEventClickListener()` to get a callback when an mEvent is clicked
+- `mWeekView.setEventLongPressListener()` to get a callback when an mEvent is long pressed
 - `mWeekView.setEmptyViewClickListener()` to get a callback when any empty space is clicked
 - `mWeekView.setEmptyViewLongPressListener()` to get a callback when any empty space is long pressed
 - `mWeekView.setDateTimeInterpreter()` to set your own labels for the calendar header row and header column
-- `mWeekView.setScrollListener()` to get an event every time the first visible day has changed
+- `mWeekView.setScrollListener()` to get an mEvent every time the first visible day has changed
 
 Sample
 ----------
@@ -151,7 +151,7 @@ There is also a [sample app](https://github.com/alamkanak/Android-Week-View/tree
 To do
 -------
 
-* Add event touch feedback selector
+* Add mEvent touch feedback selector
 * Show events that expand multiple days properly
 
 Changelog
@@ -222,7 +222,7 @@ Changelog
 
 **Version 1.1.1**
 
-* Overlapping event bug fixed
+* Overlapping mEvent bug fixed
 
 **Version 1.1.0**
 
