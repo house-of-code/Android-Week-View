@@ -10,7 +10,8 @@ import static com.alamkanak.weekview.WeekViewUtil.*;
  * Created by Raquib-ul-Alam Kanak on 7/21/2014.
  * Website: http://april-shower.com
  */
-public class WeekViewEvent {
+public class WeekViewEvent
+{
     private long mId;
     private Calendar mStartTime;
     private Calendar mEndTime;
@@ -20,9 +21,34 @@ public class WeekViewEvent {
     private boolean mAllDay;
     private int mBorderColor;
     private int mTextColor;
+    private int mIconId;
+    private int mIconColor;
 
-    public WeekViewEvent(){
 
+    public WeekViewEvent()
+    {
+
+    }
+
+    /**
+     * Initializes the event for week view.
+     *
+     * @param id          The id of the event.
+     * @param name        Name of the event.
+     * @param startYear   Year when the event starts.
+     * @param startMonth  Month when the event starts.
+     * @param startDay    Day when the event starts.
+     * @param startHour   Hour (in 24-hour format) when the event starts.
+     * @param startMinute Minute when the event starts.
+     * @param endYear     Year when the event ends.
+     * @param endMonth    Month when the event ends.
+     * @param endDay      Day when the event ends.
+     * @param endHour     Hour (in 24-hour format) when the event ends.
+     * @param endMinute   Minute when the event ends.
+     */
+    public WeekViewEvent(long id, String name, int startYear, int startMonth, int startDay, int startHour, int startMinute, int endYear, int endMonth, int endDay, int endHour, int endMinute)
+    {
+        this(id, name, startYear, startMonth, startDay, startHour, startMinute, endYear, endMonth, endDay, endHour, endMinute, 0, 0);
     }
 
     /**
@@ -39,8 +65,11 @@ public class WeekViewEvent {
      * @param endDay Day when the event ends.
      * @param endHour Hour (in 24-hour format) when the event ends.
      * @param endMinute Minute when the event ends.
+     * @param iconId Icon associated at the event.
+     * @param iconColor Color of the icon associated at the event.
      */
-    public WeekViewEvent(long id, String name, int startYear, int startMonth, int startDay, int startHour, int startMinute, int endYear, int endMonth, int endDay, int endHour, int endMinute) {
+    public WeekViewEvent(long id, String name, int startYear, int startMonth, int startDay, int startHour, int startMinute, int endYear, int endMonth, int endDay, int endHour, int endMinute,int iconId, int iconColor)
+    {
         this.mId = id;
 
         this.mStartTime = Calendar.getInstance();
@@ -58,6 +87,10 @@ public class WeekViewEvent {
         this.mEndTime.set(Calendar.MINUTE, endMinute);
 
         this.mName = name;
+
+
+        this.mIconId = iconId;
+        this.mIconColor = iconColor;
     }
 
     /**
@@ -172,6 +205,22 @@ public class WeekViewEvent {
 
     public void setTextColor(int textColor) {
         this.mTextColor = textColor;
+    }
+
+    public int getIconId() {
+        return mIconId;
+    }
+
+    public void setIconId(int iconId) {
+        this.mIconId = iconId;
+    }
+
+    public int getIconColor() {
+        return mIconColor;
+    }
+
+    public void setIconColor(int iconColor) {
+        this.mIconColor = iconColor;
     }
 
     @Override

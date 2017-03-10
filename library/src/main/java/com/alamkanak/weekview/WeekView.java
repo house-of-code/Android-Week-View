@@ -6,10 +6,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.view.GestureDetectorCompat;
@@ -129,6 +131,7 @@ public class WeekView extends View {
     private int mTodayHeaderTextColor = Color.rgb(39, 137, 228);
     private int mEventTextSize = 12;
     private int mEventTextColor = Color.BLACK;
+    private int mEventIconSize = 12;
     private int mEventPadding = 8;
     private int mHeaderColumnBackgroundColor = Color.WHITE;
     private int mBorderWidth = 2;
@@ -353,6 +356,7 @@ public class WeekView extends View {
             mHourSeparatorHeight = a.getDimensionPixelSize(R.styleable.WeekView_hourSeparatorHeight, mHourSeparatorHeight);
             mTodayHeaderTextColor = a.getColor(R.styleable.WeekView_todayHeaderTextColor, mTodayHeaderTextColor);
             mEventTextSize = a.getDimensionPixelSize(R.styleable.WeekView_eventTextSize, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mEventTextSize, context.getResources().getDisplayMetrics()));
+            mEventIconSize = a.getDimensionPixelSize(R.styleable.WeekView_eventIconSize, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, mEventIconSize, context.getResources().getDisplayMetrics()));
             mEventTextColor = a.getColor(R.styleable.WeekView_eventTextColor, mEventTextColor);
             mEventPadding = a.getDimensionPixelSize(R.styleable.WeekView_eventPadding, mEventPadding);
             mHeaderColumnBackgroundColor = a.getColor(R.styleable.WeekView_headerColumnBackground, mHeaderColumnBackgroundColor);
@@ -845,6 +849,8 @@ public class WeekView extends View {
 
                         mEventBorderPaint.setColor(mEventRects.get(i).event.getBorderColor() == 0 ? Color.argb(0, 0, 0, 0) : mEventRects.get(i).event.getBorderColor());
                         canvas.drawRect(mEventRects.get(i).borderRectF, mEventBorderPaint);
+
+                        drawEventIcon(mEventRects.get(i).event, mEventRects.get(i).rectF, canvas);
                     }
                     else
                         mEventRects.get(i).rectF = null;
@@ -906,7 +912,8 @@ public class WeekView extends View {
      * @param originalTop The original top position of the rectangle. The rectangle may have some of its portion outside of the visible area.
      * @param originalLeft The original left position of the rectangle. The rectangle may have some of its portion outside of the visible area.
      */
-    private void drawEventTitle(WeekViewEvent event, RectF rect, Canvas canvas, float originalTop, float originalLeft) {
+    private void drawEventTitle(WeekViewEvent event, RectF rect, Canvas canvas, float originalTop, float originalLeft)
+    {
         if (rect.right - rect.left - mEventPadding * 2 < 0) return;
         if (rect.bottom - rect.top - mEventPadding * 2 < 0) return;
 
@@ -914,20 +921,30 @@ public class WeekView extends View {
 
         // Prepare the name of the event.
         SpannableStringBuilder bob = new SpannableStringBuilder();
-        if (event.getName() != null) {
+        if (event.getName() != null)
+        {
             bob.append(event.getName());
             bob.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, bob.length(), 0);
             bob.append(' ');
         }
 
         // Prepare the location of the event.
-        if (event.getLocation() != null) {
+        if (event.getLocation() != null)
+        {
             bob.append(event.getLocation());
         }
 
         int availableHeight = (int) (rect.bottom - originalTop - mEventPadding * 2);
         int availableWidth = (int) (rect.right - originalLeft - mEventPadding * 2);
 
+        if (event.getIconId() != 0)
+        {
+            availableWidth -= mEventIconSize + mEventPadding;
+        }
+        if (availableWidth < 0)
+        {
+            availableWidth = 0;
+        }
         // Get text dimensions.
         StaticLayout textLayout = new StaticLayout(bob, mEventTextPaint, availableWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
 
@@ -953,6 +970,33 @@ public class WeekView extends View {
             canvas.restore();
         }
     }
+
+    private void drawEventIcon(WeekViewEvent event, RectF rect, Canvas canvas) {
+        if (rect.right - rect.left - mEventPadding * 2 - mEventIconSize < 0) return;
+        if (rect.bottom - rect.top - mEventPadding * 2 - mEventIconSize < 0) return;
+
+        int iconId = event.getIconId();
+        if (iconId != 0) {
+            Drawable drawable = mContext.getResources().getDrawable(iconId);
+
+            if (drawable != null) {
+                int left = 0;
+                int top = 0;
+                int right = mEventIconSize;
+                int bottom = mEventIconSize;
+                int color = event.getIconColor() == 0 ? mEventTextColor : event.getIconColor();
+
+                drawable.setBounds(left, top, right, bottom);
+                drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+
+                canvas.save();
+                canvas.translate(rect.right - mEventIconSize - mEventPadding,
+                        rect.bottom - mEventIconSize - mEventPadding);
+                drawable.draw(canvas);
+                canvas.restore();
+            }
+        }
+         }
 
     private int alphaColor(int alpha, int color) {
         return Color.argb(alpha, Color.red(color), Color.green(color), Color.blue(color));
